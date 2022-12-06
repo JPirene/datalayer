@@ -250,7 +250,7 @@ abstract class DataLayer
     /**
      * @return bool
      */
-    public function save(): bool
+    public function save($forceCreate = false): bool
     {
         $primary = $this->primary;
         $id = null;
@@ -259,6 +259,18 @@ abstract class DataLayer
         try {
             if (!$this->required()) {
                 throw new PDOException("Preencha os campos necessários");
+            }
+
+            /** Force Create On Id */
+            if ($forceCreate && !empty($this->data->$primary)) {
+                $hasThis = $this->findById($this->data->$primary)->data();
+                if ($hasThis === null) {
+                    $id = $this->create($this->safe());
+                    $save = $this->data = $this->findById($id)->data();
+                    if ($save === null)
+                        return false;
+                    return true;
+                }
             }
 
             /** Update */
