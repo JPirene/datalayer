@@ -263,14 +263,12 @@ abstract class DataLayer
 
             /** Force Create On Id */
             if ($forceCreate && !empty($this->data->$primary)) {
-                $hasThis = $this->findById($this->data->$primary)->data();
-                if ($hasThis === null) {
-                    $id = $this->create($this->safe());
-                    $save = $this->data = $this->findById($id)->data();
-                    if ($save === null)
-                        return false;
-                    return true;
+                $id = $this->create((array)$this->data);
+                $save = $this->data = $this->findById($id)->data();
+                if ($save === null) {
+                    return false;
                 }
+                return true;
             }
 
             /** Update */
