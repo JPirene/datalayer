@@ -161,6 +161,24 @@ abstract class DataLayer
     }
 
     /**
+     * @param string|null $terms
+     * @param string|null $params
+     * @param string $columns
+     * @return DataLayer
+     */
+    public function join(string $columns = "*", string $myIndice, string $typeOperation, string $externalTable, string $externalIndice, string $termsInner, ?string $termsWhere = null, ?string $params = null): DataLayer
+    {
+        if ($termsWhere) {
+            $this->statement = "SELECT {$columns} FROM {$this->entity} {$myIndice} {$typeOperation} JOIN  {$externalTable} {$externalIndice} ON {$termsInner} WHERE {$termsWhere}";
+            parse_str($params, $this->params);
+            return $this;
+        }
+
+        $this->statement = "SELECT {$columns} FROM {$this->entity} {$myIndice} {$typeOperation} JOIN {$externalTable} {$externalIndice} ON {$termsInner}";
+        return $this;
+    }
+
+    /**
      * @param int $id
      * @param string $columns
      * @return DataLayer|null
