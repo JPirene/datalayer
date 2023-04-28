@@ -266,7 +266,10 @@ abstract class DataLayer
     }
 
     /**
-     * @return bool
+     * Save DataLayer
+     *
+     * @param boolean $forceCreate
+     * @return boolean
      */
     public function save($forceCreate = false): bool
     {
@@ -280,13 +283,12 @@ abstract class DataLayer
             }
 
             /** Force Create On Id */
-            if ($forceCreate && !empty($this->data->$primary)) {
+            if ($forceCreate) {
                 $id = $this->create((array)$this->data);
-                $save = $this->data = $this->findById($id)->data();
-                if ($save === null) {
+                if ($id === null) {
                     return false;
                 }
-                return true;
+                return $this->data == $this->findById($this->$primary)->data();
             }
 
             /** Update */
